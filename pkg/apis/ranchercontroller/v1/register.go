@@ -5,12 +5,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"database-controller/pkg/apis/rancher-controller"
+	"database-controller/pkg/apis/ranchercontroller"
 )
 
 var SchemeGroupVersion = schema.GroupVersion{
-	Group:   rancher_controller.GroupName,
-	Version: rancher_controller.Version,
+	Group:   ranchercontroller.GroupName,
+	Version: ranchercontroller.Version,
 }
 
 var (

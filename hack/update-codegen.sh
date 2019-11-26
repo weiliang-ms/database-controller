@@ -27,9 +27,9 @@ CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-
 #                  instead of the $GOPATH directly. For normal projects this can be dropped.
 bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
   database-controller/pkg/generated database-controller/pkg/apis \
-  rancher-controller:v1 \
+  ranchercontroller:v1 \
   --output-base "$GOPATH/src" \
   --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
 
 # To use your own boilerplate text append:
-#   --go-header-file "${SCRIPT_ROOT}"/hack/rancher-controller-boilerplate.go.txt
+#   --go-header-file "${SCRIPT_ROOT}"/hack/ranchercontroller-boilerplate.go.txt
