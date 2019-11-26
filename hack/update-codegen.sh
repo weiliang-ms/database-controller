@@ -19,28 +19,17 @@ set -o nounset
 set -o pipefail
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
 
 # generate the code with:
-# - --output-base because this script should also be able to run inside the vendor dir of
-#   k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
-#   instead of the $GOPATH directly. For normal projects this can be dropped.
-"$(dirname "${BASH_SOURCE[0]}")"/../generate-internal-groups.sh all \
-  k8s.io/code-generator/_examples/apiserver k8s.io/code-generator/_examples/apiserver/apis k8s.io/code-generator/_examples/apiserver/apis \
-  "example:v1 example2:v1 example3.io:v1" \
-  --output-base "$(dirname "${BASH_SOURCE[0]}")/../../.." \
-  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate.go.txt"
-"$(dirname "${BASH_SOURCE[0]}")"/../generate-groups.sh all \
-  k8s.io/code-generator/_examples/crd k8s.io/code-generator/_examples/crd/apis \
-  "example:v1 example2:v1" \
-  --output-base "$(dirname "${BASH_SOURCE[0]}")/../../.." \
-  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate.go.txt"
-"$(dirname "${BASH_SOURCE[0]}")"/../generate-groups.sh all \
-  k8s.io/code-generator/_examples/MixedCase k8s.io/code-generator/_examples/MixedCase/apis \
-  "example:v1" \
-  --output-base "$(dirname "${BASH_SOURCE[0]}")/../../.." \
-  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate.go.txt"
-"$(dirname "${BASH_SOURCE[0]}")"/../generate-groups.sh all \
-  k8s.io/code-generator/_examples/HyphenGroup k8s.io/code-generator/_examples/HyphenGroup/apis \
-  "example:v1" \
-  --output-base "$(dirname "${BASH_SOURCE[0]}")/../../.." \
-  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate.go.txt"
+# --output-base    because this script should also be able to run inside the vendor dir of
+#                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
+#                  instead of the $GOPATH directly. For normal projects this can be dropped.
+bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy,client,informer,lister" \
+  database-controller/pkg/generated database-controller/pkg/apis \
+  rancher-controller:v1 \
+  --output-base "$GOPATH/src" \
+  --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
+
+# To use your own boilerplate text append:
+#   --go-header-file "${SCRIPT_ROOT}"/hack/rancher-controller-boilerplate.go.txt
