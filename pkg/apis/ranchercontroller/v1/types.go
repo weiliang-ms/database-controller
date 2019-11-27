@@ -12,15 +12,18 @@ import (
 type Database struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-
-	Spec DatabaseSpec `json:"spec"`
+	Spec              DatabaseSpec   `json:"spec"`
+	Status            DatabaseStatus `json:"status"`
 }
 
-// DatabaseSpec is the spec for a Foo resource
+// DatabaseSpec is the spec for a Database resource
 type DatabaseSpec struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Encoding string `json:"encoding,omitempty"`
+	DeploymentName string `json:"deploymentName"`
+	Replicas       *int32 `json:"replicas"`
+}
+
+type DatabaseStatus struct {
+	AvailableReplicas int32 `json:"availableReplicas"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
